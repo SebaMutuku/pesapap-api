@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -28,16 +29,18 @@ public class StudentApi {
         this.studentService = studentService;
 
     }
-    @PostMapping(value = "/create}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 
+    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StudentPaymentResponse> addStudent(@RequestBody Student student) {
         ResponseEntity<StudentPaymentResponse> response = ResponseEntity.ok(studentService.createStudent(student));
         log.info("Response object::: {}", response);
         return response;
     }
-    @GetMapping(value = "/getStudent/{registrationId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 
-    public ResponseEntity<StudentValidationResponse> findStudentById(@PathVariable String registrationId) {
+    @GetMapping(value = "/getStudent/{registrationId}")
+    @ResponseBody
+    public ResponseEntity<StudentValidationResponse> findStudentById(@PathVariable("registrationId") String registrationId) {
+        log.info("Student ID object::: {}", registrationId);
         ResponseEntity<StudentValidationResponse> response = ResponseEntity.ok(studentService.findById(registrationId));
         log.info("Response object::: {}", response);
         return response;

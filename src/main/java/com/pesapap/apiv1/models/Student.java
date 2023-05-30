@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,6 +22,7 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "Student")
+@ToString
 public class Student {
     @Id
     @JsonIgnore
@@ -36,13 +38,13 @@ public class Student {
     @Column(name = "COURSE_NAME", length = 50, nullable = false)
     private String courseName;
 
-    @JsonIgnore
     @Column(name = "ANNUAL_FEE", length = 50, nullable = false)
     private Double annualFee;
-
     @Column(name = "PAID_FEES", length = 50)
     private Double paidFees;
+
     @Transient
+    @JsonIgnore
     private Double feeBalance;
 
     @Column(name = "PAYMENT_CHANNEL", length = 50)

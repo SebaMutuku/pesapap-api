@@ -31,6 +31,7 @@ public class StudentService extends StudentServiceImpl {
     @Override
     public StudentValidationResponse findById(String registrationId) {
         try {
+            log.info("Registration id [{}]",registrationId);
             Optional<StudentValidationResponse> studentValidationResponse = studentRepo.findByRegistrationId(registrationId)
                     .map(student -> new StudentValidationResponse(student, "Success", HttpStatus.OK));
             studentValidationResponse.ifPresent(response -> log.error("Student object----->[{}]", response));
@@ -53,12 +54,11 @@ public class StudentService extends StudentServiceImpl {
             StudentDTO paymentInfo = paymentRequest.payload();
             Optional<StudentPaymentResponse> studentPaymentResponse = studentRepo.findByRegistrationId(paymentRequest.payload().getRegNumber())
                     .map(student -> {
-                        student.setPaymentChannel(paymentInfo.getPaymentChannel());
                         student.setPaidFees(paymentInfo.getPaymentAmount());
                         student.setPaymentChannel(PaymentChannels.valueOf(paymentInfo.getPaymentChannel()).name());
                         student.setFeeBalance(student.getAnnualFee() - paymentInfo.getPaymentAmount());
-                        studentRepo.save(student);
-                        return new StudentPaymentResponse(student, "Success", HttpStatus.OK);
+                        Student savedStudent = studentRepo.save(student);
+                        return new StudentPaymentResponse(savedStudent, "Success", HttpStatus.OK);
                     });
             studentPaymentResponse.ifPresent(response -> log.error("Student object:: [{}]", response));
             return studentPaymentResponse.orElse(new StudentPaymentResponse(null, "An Error occurred", HttpStatus.EXPECTATION_FAILED));
