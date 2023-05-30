@@ -3,6 +3,7 @@ package com.pesapap.apiv1.api;
 import com.pesapap.apiv1.dto.PaymentRequest;
 import com.pesapap.apiv1.dto.StudentPaymentResponse;
 import com.pesapap.apiv1.dto.StudentValidationResponse;
+import com.pesapap.apiv1.models.Student;
 import com.pesapap.apiv1.services.StudentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,13 @@ public class StudentApi {
         this.studentService = studentService;
 
     }
+    @PostMapping(value = "/create}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 
+    public ResponseEntity<StudentPaymentResponse> addStudent(@RequestBody Student student) {
+        ResponseEntity<StudentPaymentResponse> response = ResponseEntity.ok(studentService.createStudent(student));
+        log.info("Response object::: {}", response);
+        return response;
+    }
     @GetMapping(value = "/getStudent/{registrationId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 
     public ResponseEntity<StudentValidationResponse> findStudentById(@PathVariable String registrationId) {
