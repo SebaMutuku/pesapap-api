@@ -4,9 +4,10 @@ import com.pesapap.apiv1.dto.PaymentRequest;
 import com.pesapap.apiv1.dto.StudentDTO;
 import com.pesapap.apiv1.dto.StudentPaymentResponse;
 import com.pesapap.apiv1.dto.StudentValidationResponse;
-import com.pesapap.apiv1.models.Student;
 import com.pesapap.apiv1.repo.StudentRepo;
 import com.pesapap.apiv1.serviceimpl.StudentServiceImpl;
+import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,12 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 public class StudentService extends StudentServiceImpl {
     private final StudentRepo studentRepo;
 
-    public StudentService(@Autowired StudentRepo studentRepo) {
+    @Autowired
+    public StudentService(StudentRepo studentRepo) {
         this.studentRepo = studentRepo;
 
     }
@@ -26,15 +29,17 @@ public class StudentService extends StudentServiceImpl {
     @Override
     public StudentValidationResponse findById(String registrationId) {
         try {
-            return new StudentValidationResponse(studentRepo.findByRegistrationId(registrationId), "Success", HttpStatus.OK);
+            Optional<StudentValidationResponse> studentValidationResponse = studentRepo.findByRegistrationId(registrationId)
+                    .map(student -> new StudentValidationResponse(student, "Success", HttpStatus.OK));
+            studentValidationResponse.ifPresent(response -> log.info("Student object:: {}", response));
+            return studentValidationResponse.orElse(new StudentValidationResponse(null, "Student with that registration not found", HttpStatus.NOT_FOUND));
         } catch (Exception e) {
-            return new StudentValidationResponse(
+            StudentValidationResponse studentValidationResponse = new StudentValidationResponse(
                     null,
                     "Student with that registration not found",
-                    HttpStatus.NOT_FOUND
-
-
-            );
+                    HttpStatus.NOT_FOUND);
+            log.error("Response  object {}", studentValidationResponse);
+            return studentValidationResponse;
         }
     }
 
@@ -42,17 +47,23 @@ public class StudentService extends StudentServiceImpl {
     @Override
     public StudentPaymentResponse paymentResponse(PaymentRequest paymentRequest) {
         try {
-            var paymentInfo = paymentRequest.payload();
-            var student = studentRepo.findByRegistrationId(paymentInfo.getRegNumber());
-            student.setPaymentChannel(paymentInfo.getPaymentChannel());
-            student.setPaidFees(paymentInfo.getPaymentAmount());
-            student.setPaymentChannel(paymentInfo.getPaymentChannel());
-            student.setFeeBalance(student.getAnnualFee() - paymentInfo.getPaymentAmount());
-            studentRepo.save(Student.builder().build());
-            var responseDTO = StudentDTO.builder().paymentChannel(paymentInfo.getPaymentChannel()).paymentAmount(paymentInfo.getPaymentAmount()).paymentAmount(paymentInfo.getPaymentAmount()).build();
-            return new StudentPaymentResponse(responseDTO, "Success", HttpStatus.OK);
+            StudentDTO paymentInfo = paymentRequest.payload();
+            Optional<StudentPaymentResponse> studentPaymentResponse = studentRepo.findByRegistrationId(paymentRequest.payload().getRegNumber())
+                    .map(student -> {
+                        student.setPaymentChannel(paymentInfo.getPaymentChannel());
+                        student.setPaidFees(paymentInfo.getPaymentAmount());
+                        student.setPaymentChannel(paymentInfo.getPaymentChannel());
+                        student.setFeeBalance(student.getAnnualFee() - paymentInfo.getPaymentAmount());
+                        studentRepo.save(student);
+                        return new StudentPaymentResponse(student, "Success", HttpStatus.OK);
+                    });
+            studentPaymentResponse.ifPresent(response -> log.info("Student object:: {}", response));
+            return studentPaymentResponse.orElse(new StudentPaymentResponse(null, "An Error occurred", HttpStatus.EXPECTATION_FAILED));
         } catch (Exception exception) {
-            return new StudentPaymentResponse(null, "An error occurred", HttpStatus.EXPECTATION_FAILED);
+
+            StudentPaymentResponse studentPaymentResponse = new StudentPaymentResponse(null, "An error occurred", HttpStatus.EXPECTATION_FAILED);
+            log.error("Response  object {}", studentPaymentResponse);
+            return studentPaymentResponse;
         }
     }
 }

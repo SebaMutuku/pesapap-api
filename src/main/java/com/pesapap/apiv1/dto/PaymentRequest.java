@@ -1,8 +1,8 @@
 package com.pesapap.apiv1.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+@JsonSerialize
 public record PaymentRequest(StudentDTO payload) {
 }
 

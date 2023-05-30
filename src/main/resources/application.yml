@@ -1,1 +1,17 @@
+server:
+  port: 9096
 
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    hikari:
+      pool-name: pesapap-api-pool
+      maximum-pool-size: 200
+      allow-pool-suspension: true
+
+  security:
+    user:
+      name: pesapap-api
+      password: pesap1234
