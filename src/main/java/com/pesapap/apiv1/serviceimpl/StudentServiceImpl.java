@@ -6,9 +6,11 @@ import com.pesapap.apiv1.dto.StudentValidationResponse;
 import com.pesapap.apiv1.models.Student;
 
 public abstract class StudentServiceImpl {
+    public abstract StudentPaymentResponse createStudent(Student student);
+
     public abstract StudentValidationResponse findById(String registrationId);
 
     public abstract StudentPaymentResponse paymentResponse(PaymentRequest paymentRequest);
-    public abstract StudentPaymentResponse createStudent(Student student);
+
 
 }

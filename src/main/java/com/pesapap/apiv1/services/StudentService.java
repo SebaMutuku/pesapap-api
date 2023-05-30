@@ -27,11 +27,35 @@ public class StudentService extends StudentServiceImpl {
 
     }
 
+    @Override
+    @Transactional
+    public StudentPaymentResponse createStudent(Student student) {
+        Optional<Student> dbStudent = studentRepo.findByRegistrationId(student.getRegistrationId());
+        return dbStudent.map(existingStudent ->
+                        new StudentPaymentResponse(existingStudent, "Student already exists", HttpStatus.ALREADY_REPORTED))
+                .orElseGet(() -> {
+                    Student sessionStudent = Student.builder()
+                            .courseName(student.getCourseName())
+                            .fullName(student.getFullName())
+                            .feeBalance(0.0)
+                            .annualFee(87000.00)
+                            .paidFees(0.00)
+                            .paymentChannel(null)
+                            .registrationId(student.getRegistrationId())
+                            .build();
+                    studentRepo.save(sessionStudent);
+
+                    StudentPaymentResponse studentPaymentResponse = new StudentPaymentResponse(sessionStudent, "Success", HttpStatus.CREATED);
+                    log.info("Response [{}]", studentPaymentResponse);
+                    return studentPaymentResponse;
+                });
+    }
+
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     @Override
     public StudentValidationResponse findById(String registrationId) {
         try {
-            log.info("Registration id [{}]",registrationId);
+            log.info("Registration id [{}]", registrationId);
             Optional<StudentValidationResponse> studentValidationResponse = studentRepo.findByRegistrationId(registrationId)
                     .map(student -> new StudentValidationResponse(student, "Success", HttpStatus.OK));
             studentValidationResponse.ifPresent(response -> log.error("Student object----->[{}]", response));
@@ -69,26 +93,5 @@ public class StudentService extends StudentServiceImpl {
         }
     }
 
-    @Override
-    public StudentPaymentResponse createStudent(Student student) {
-        Optional<Student> dbStudent = studentRepo.findByRegistrationId(student.getRegistrationId());
-        return dbStudent.map(existingStudent ->
-                        new StudentPaymentResponse(existingStudent, "Student already exists", HttpStatus.ALREADY_REPORTED))
-                .orElseGet(() -> {
-                    Student sessionStudent = Student.builder()
-                            .courseName(student.getCourseName())
-                            .fullName(student.getFullName())
-                            .feeBalance(0.0)
-                            .annualFee(87000.00)
-                            .paidFees(0.00)
-                            .paymentChannel(null)
-                            .registrationId(student.getRegistrationId())
-                            .build();
-                    studentRepo.save(sessionStudent);
 
-                    StudentPaymentResponse studentPaymentResponse = new StudentPaymentResponse(sessionStudent, "Success", HttpStatus.CREATED);
-                    log.info("Response [{}]", studentPaymentResponse);
-                    return studentPaymentResponse;
-                });
-    }
 }
