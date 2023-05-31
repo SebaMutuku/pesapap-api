@@ -58,7 +58,7 @@ public class StudentService extends StudentServiceImpl {
             log.info("Registration id [{}]", registrationId);
             Optional<StudentValidationResponse> studentValidationResponse = studentRepo.findByRegistrationId(registrationId)
                     .map(student -> new StudentValidationResponse(student, "Success", HttpStatus.OK));
-            studentValidationResponse.ifPresent(response -> log.error("Student object----->[{}]", response));
+            studentValidationResponse.ifPresent(response -> log.info("Student [{}]", response));
             return studentValidationResponse.orElse(new StudentValidationResponse(null, "Student with that registration not found", HttpStatus.NOT_FOUND));
         } catch (Exception e) {
             StudentValidationResponse studentValidationResponse = new StudentValidationResponse(
