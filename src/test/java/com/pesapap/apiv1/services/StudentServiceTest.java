@@ -39,7 +39,7 @@ class StudentServiceTest {
         StudentService studentService = new StudentService(studentRepo);
         Student student = mock(Student.class);
         when(student.getCourseName()).thenReturn("Course Name");
-        when(student.getFullName()).thenReturn("Dr Jane Doe");
+        when(student.getFullName()).thenReturn("Student Tests");
         when(student.getRegistrationId()).thenReturn("42");
         StudentPaymentResponse actualCreateStudentResult = studentService.createStudent(student);
         assertEquals(HttpStatus.CREATED, actualCreateStudentResult.httpStatus());
@@ -53,7 +53,7 @@ class StudentServiceTest {
         assertNull(((Student) payloadResult).getId());
         assertEquals("Dr Jane Doe", ((Student) payloadResult).getFullName());
         assertEquals(0.0d, ((Student) payloadResult).getFeeBalance().doubleValue());
-        assertEquals("Course Name", ((Student) payloadResult).getCourseName());
+        assertEquals("Student Tests", ((Student) payloadResult).getCourseName());
         verify(studentRepo).save(Mockito.any());
         verify(studentRepo).findByRegistrationId(Mockito.any());
         verify(student, atLeast(1)).getCourseName();
