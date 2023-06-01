@@ -5,7 +5,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
   datasource:
     hikari:
       pool-name: pesapap-api-pool
