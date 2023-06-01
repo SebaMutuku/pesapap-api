@@ -1,7 +1,7 @@
 # pesapap-api
 
 ## Swagger documentation
-Make sure the application is up and access it via link the endpoint [Swagger endpoint. Be sure to edit it](URI/swagger-ui/index.html) e.g http://localhost:9096/swagger-ui/index.html
+Make sure the application is up and access it via link the endpoint URI/swagger-ui/index.html e.g http://localhost:9096/swagger-ui/index.html
 
 ## Build and run the application
 Student registration, querying and fees payment api with disabled Spring Oauth2 JWT authentication Password encryption using BCrypt Role-based authorization with Spring Security Customized access denied handling Technologies
