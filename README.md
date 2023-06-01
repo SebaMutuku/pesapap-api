@@ -4,7 +4,7 @@
 Make sure the application is up and access it via link the endpoint [Swagger endpoint. Be sure to edit it](http or https://{ip}:9096/swagger-ui/index.html)
 
 ## Build and run the application
-User registration and login with JWT authentication Password encryption using BCrypt Role-based authorization with Spring Security Customized access denied handling Technologies
+Student registration, querying and fees payment api with disabled Spring Oauth2 JWT authentication Password encryption using BCrypt Role-based authorization with Spring Security Customized access denied handling Technologies
 
 Spring Boot 3.0 Spring Security JSON Web Tokens (JWT) BCrypt Maven Getting Started
 
