@@ -12,9 +12,9 @@ To get started with this project, you will need to have the following installed 
 
 JDK 17+ Maven 3+ To build and run the project, follow these steps:
 
-Clone the repository: git clone [Https repo url](https://github.com/SebaMutuku/pesapap-api.git) for https and [Ssh repo url](git@github.com:SebaMutuku/pesapap-api.git) 
+Clone the repository: git clone https://github.com/SebaMutuku/pesapap-api.git for https and git@github.com:SebaMutuku/pesapap-api.git for ssh
 Navigate to the project directory and :  
-1. Build the project: `mvn clean install -DskipTests`. This will build a jar file in target folder
+1. Build the project: `mvn clean install -DskipTests` or `mvn clean install`. This will build a jar file in target folder
 2. Run the project: mvn spring-boot:run -> The application will be available at http://localhost:9096.
 
 You can also build it with docker file using the command `docker build -t pesapap-api .`
