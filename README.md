@@ -20,5 +20,4 @@ Navigate to the project directory and :
 2. If you are running the application as a standalone jar file, be sure to copy `application.yml` into the same location as the jar file and run using command `java -jar jarname.jar &`. & is included to run it on background.
 3. If you are running the project using an IDE or from command line use: `mvn spring-boot:run` .
 4. The application will be available on http://localhost:9096.
-
-You can also build it with docker file using the command `docker build -t pesapap-api .`
+5. If you want to build a dockerfile for your project, ensure you have run `step 1` correctly and works without any issues. You can then build a docker image using the command `docker build -t pesapap-api .`
