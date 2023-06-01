@@ -8,6 +8,7 @@ import com.pesapap.apiv1.dto.StudentValidationResponse;
 import com.pesapap.apiv1.models.Student;
 import com.pesapap.apiv1.repo.StudentRepo;
 import com.pesapap.apiv1.serviceimpl.AbstractStudentService;
+import java.util.Date;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,7 @@ public class StudentService extends AbstractStudentService {
                                 .paidFees(0.00)
                                 .paymentChannel(null)
                                 .registrationId(student.getRegistrationId())
+                                .joiningDate(new Date())
                                 .build();
                         studentRepo.save(sessionStudent);
                         studentPaymentResponse = new StudentPaymentResponse(sessionStudent, "Success", HttpStatus.CREATED);

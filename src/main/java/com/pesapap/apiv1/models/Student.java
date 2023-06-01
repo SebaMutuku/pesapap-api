@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,5 +50,9 @@ public class Student {
 
     @Column(name = "PAYMENT_CHANNEL", length = 50)
     private String paymentChannel;
+
+    @JsonIgnore
+    @Column(name = "DATE_OF_JOINING", length = 50, nullable = false)
+    private Date joiningDate;
 
 }
