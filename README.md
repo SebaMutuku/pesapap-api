@@ -18,3 +18,4 @@ Navigate to the project directory and :
 2. Run the project: mvn spring-boot:run -> The application will be available at http://localhost:9096.
 
 You can also build it with docker file.
+docker build -t pesapap-api .

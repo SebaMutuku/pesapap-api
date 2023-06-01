@@ -6,6 +6,7 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
+
   datasource:
     hikari:
       pool-name: pesapap-api-pool
@@ -18,3 +19,8 @@ spring:
   sql:
     init:
       platform: h2
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
