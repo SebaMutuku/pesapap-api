@@ -1,9 +1,12 @@
 package com.pesapap.apiv1.api;
 
 import com.pesapap.apiv1.dto.StudentPaymentResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,7 +26,7 @@ public class RestControllerExceptionAdvice extends Exception {
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler({Exception.class})
+    @ExceptionHandler({Exception.class, DataIntegrityViolationException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<Object> handledException(Exception exception) {
         var response = new StudentPaymentResponse(null, exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -42,6 +45,13 @@ public class RestControllerExceptionAdvice extends Exception {
     public ResponseEntity<Object> handledException(RuntimeException exception) {
         var response = new StudentPaymentResponse(null, exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler({HttpMessageNotReadableException.class, HttpMediaTypeNotAcceptableException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleHttpExceptions(Exception exception) {
+        var response = new StudentPaymentResponse(null, exception.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({NoHandlerFoundException.class})
