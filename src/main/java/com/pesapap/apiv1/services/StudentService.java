@@ -8,7 +8,9 @@ import com.pesapap.apiv1.dto.StudentValidationResponse;
 import com.pesapap.apiv1.models.Student;
 import com.pesapap.apiv1.repo.StudentRepo;
 import com.pesapap.apiv1.serviceimpl.StudentServiceImpl;
+
 import java.util.Optional;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,22 +32,28 @@ public class StudentService extends StudentServiceImpl {
     @Override
     @Transactional
     public StudentPaymentResponse createStudent(Student student) {
+        log.info("Request  [{}]", student);
         Optional<Student> dbStudent = studentRepo.findByRegistrationId(student.getRegistrationId());
         return dbStudent.map(existingStudent ->
                         new StudentPaymentResponse(existingStudent, "Student already exists", HttpStatus.ALREADY_REPORTED))
                 .orElseGet(() -> {
-                    Student sessionStudent = Student.builder()
-                            .courseName(student.getCourseName())
-                            .fullName(student.getFullName())
-                            .feeBalance(0.0)
-                            .annualFee(87000.00)
-                            .paidFees(0.00)
-                            .paymentChannel(null)
-                            .registrationId(student.getRegistrationId())
-                            .build();
-                    studentRepo.save(sessionStudent);
-
-                    StudentPaymentResponse studentPaymentResponse = new StudentPaymentResponse(sessionStudent, "Success", HttpStatus.CREATED);
+                    StudentPaymentResponse studentPaymentResponse;
+                    if (student.getRegistrationId() != null && student.getFullName() != null && student.getCourseName() != null) {
+                        Student sessionStudent = Student.builder()
+                                .courseName(student.getCourseName())
+                                .fullName(student.getFullName())
+                                .feeBalance(0.0)
+                                .annualFee(87000.00)
+                                .paidFees(0.00)
+                                .paymentChannel(null)
+                                .registrationId(student.getRegistrationId())
+                                .build();
+                        studentRepo.save(sessionStudent);
+                        studentPaymentResponse = new StudentPaymentResponse(sessionStudent, "Success", HttpStatus.CREATED);
+                        log.info("Response [{}]", studentPaymentResponse);
+                        return studentPaymentResponse;
+                    }
+                    studentPaymentResponse = new StudentPaymentResponse(null, "Invalid Student data", HttpStatus.BAD_REQUEST);
                     log.info("Response [{}]", studentPaymentResponse);
                     return studentPaymentResponse;
                 });
