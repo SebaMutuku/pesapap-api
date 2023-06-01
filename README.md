@@ -17,4 +17,4 @@ Navigate to the project directory and :
 1. Build the project: `mvn clean install -DskipTests`. This will build a jar file in target folder
 2. Run the project: mvn spring-boot:run -> The application will be available at http://localhost:9096.
 
-You can also build it with docker file. `docker build -t pesapap-api .`
+You can also build it with docker file using the command `docker build -t pesapap-api .`
