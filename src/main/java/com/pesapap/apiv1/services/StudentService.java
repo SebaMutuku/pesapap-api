@@ -31,7 +31,7 @@ public class StudentService extends StudentServiceImpl {
     @Override
     @Transactional
     public StudentPaymentResponse createStudent(Student student) {
-        log.info("Fee payment request ----> [{}]", student);
+        log.info("Create student request ----> [{}]", student);
         try {
             Optional<Student> dbStudent = studentRepo.findByRegistrationId(student.getRegistrationId());
             return dbStudent.map(existingStudent ->
@@ -50,11 +50,11 @@ public class StudentService extends StudentServiceImpl {
                                     .build();
                             studentRepo.save(sessionStudent);
                             studentPaymentResponse = new StudentPaymentResponse(sessionStudent, "Success", HttpStatus.CREATED);
-                            log.info("Payment response ---> [{}]", studentPaymentResponse);
+                            log.info("Student response ---> [{}]", studentPaymentResponse);
                             return studentPaymentResponse;
                         }
                         studentPaymentResponse = new StudentPaymentResponse(null, "Invalid Student data", HttpStatus.BAD_REQUEST);
-                        log.error("Payment response ---> [{}]", studentPaymentResponse);
+                        log.error("Student response ---> [{}]", studentPaymentResponse);
                         return studentPaymentResponse;
                     });
         } catch (Exception exception) {

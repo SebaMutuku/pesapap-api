@@ -34,7 +34,7 @@ public class StudentApi {
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StudentPaymentResponse> addStudent(@RequestBody Student student) {
         StudentPaymentResponse body = studentService.createStudent(student);
-        log.info("Response object [{}]", body);
+        log.info("Create student response --> [{}]", body);
         return new ResponseEntity<>(body, body.httpStatus());
     }
 
@@ -42,14 +42,14 @@ public class StudentApi {
     @ResponseBody
     public ResponseEntity<StudentValidationResponse> findStudentById(@PathVariable("registrationId") String registrationId) {
         StudentValidationResponse body = studentService.findById(registrationId);
-        log.info("Response object [{}]", body);
+        log.info("Validation response --> [{}]", body);
         return new ResponseEntity<>(body, body.status());
     }
 
     @PutMapping(value = "/payment", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StudentPaymentResponse> paymentResponse(@RequestBody PaymentRequest paymentRequest) {
         StudentPaymentResponse body = studentService.paymentResponse(paymentRequest);
-        log.info("Response object [{}]", body);
+        log.info("Payment response --> [{}]", body);
         return new ResponseEntity<>(body, body.httpStatus());
     }
 }
