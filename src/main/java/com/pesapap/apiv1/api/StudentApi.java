@@ -30,9 +30,9 @@ public class StudentApi {
         return new ResponseEntity<>(body, body.httpStatus());
     }
 
-    @GetMapping(value = "/getStudent/{registrationId}")
+    @GetMapping(value = "/getStudent")
     @ResponseBody
-    public ResponseEntity<StudentValidationResponse> findStudentById(@PathVariable("registrationId") String registrationId) {
+    public ResponseEntity<StudentValidationResponse> findStudentById(@RequestParam String registrationId) {
         StudentValidationResponse body = studentService.findById(registrationId);
         log.info("Validation response --> [{}]", body);
         return new ResponseEntity<>(body, body.status());

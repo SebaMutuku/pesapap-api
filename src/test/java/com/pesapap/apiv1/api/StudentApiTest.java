@@ -41,7 +41,7 @@ class StudentApiTest {
         ResponseEntity<StudentPaymentResponse> actualAddStudentResult = studentApi.addStudent(new Student());
         assertTrue(actualAddStudentResult.hasBody());
         assertTrue(actualAddStudentResult.getHeaders().isEmpty());
-        assertEquals(208, actualAddStudentResult.getStatusCodeValue());
+        assertEquals(208, actualAddStudentResult.getStatusCode().value());
         StudentPaymentResponse body = actualAddStudentResult.getBody();
         assertEquals("Student already exists", body.message());
         assertEquals(HttpStatus.ALREADY_REPORTED, body.httpStatus());
@@ -58,7 +58,7 @@ class StudentApiTest {
                 new StudentService(studentRepo))).findStudentById("42");
         assertTrue(actualFindStudentByIdResult.hasBody());
         assertTrue(actualFindStudentByIdResult.getHeaders().isEmpty());
-        assertEquals(200, actualFindStudentByIdResult.getStatusCodeValue());
+        assertEquals(200, actualFindStudentByIdResult.getStatusCode().value());
         StudentValidationResponse body = actualFindStudentByIdResult.getBody();
         assertSame(student, body.payload());
         assertEquals("Success", body.message());
@@ -77,7 +77,7 @@ class StudentApiTest {
                 .paymentResponse(new PaymentRequest(null));
         assertTrue(actualPaymentResponseResult.hasBody());
         assertTrue(actualPaymentResponseResult.getHeaders().isEmpty());
-        assertEquals(100, actualPaymentResponseResult.getStatusCodeValue());
+        assertEquals(100, actualPaymentResponseResult.getStatusCode().value());
         verify(studentService).paymentResponse(Mockito.any());
     }
 

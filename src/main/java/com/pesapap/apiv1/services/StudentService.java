@@ -8,9 +8,7 @@ import com.pesapap.apiv1.dto.StudentValidationResponse;
 import com.pesapap.apiv1.models.Student;
 import com.pesapap.apiv1.repo.StudentRepo;
 import com.pesapap.apiv1.serviceimpl.AbstractStudentService;
-
 import java.util.Optional;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -62,17 +60,16 @@ public class StudentService extends AbstractStudentService {
     @Override
     public StudentValidationResponse findById(String registrationId) {
         log.info("Registration id ---> [{}]", registrationId);
-        Optional<StudentValidationResponse> studentValidationResponse = studentRepo.findByRegistrationId(registrationId)
+        Optional<StudentValidationResponse> studentValidationResponse = studentRepo.findByRegistrationId(registrationId.trim())
                 .map(student -> new StudentValidationResponse(student, "Success", HttpStatus.OK));
         studentValidationResponse.ifPresent(response -> log.info("Validation response ----> [{}]", response));
         return studentValidationResponse.get();
 
     }
 
-    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
+    @Transactional
     @Override
     public StudentPaymentResponse paymentResponse(PaymentRequest paymentRequest) {
-
         log.info("Fee payment request ---> [{}]", paymentRequest);
         StudentDTO paymentInfo = paymentRequest.payload();
         Optional<StudentPaymentResponse> studentPaymentResponse = studentRepo.findByRegistrationId(paymentRequest.payload().getRegNumber())

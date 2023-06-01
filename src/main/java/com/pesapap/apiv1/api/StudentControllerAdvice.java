@@ -1,6 +1,7 @@
 package com.pesapap.apiv1.api;
 
 import com.pesapap.apiv1.dto.StudentPaymentResponse;
+import java.util.NoSuchElementException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +13,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import java.util.NoSuchElementException;
-
 @RestControllerAdvice
-public class RestControllerExceptionAdvice extends Exception {
+public class StudentControllerAdvice {
 
 
     @ExceptionHandler({AccessDeniedException.class})
@@ -34,10 +33,10 @@ public class RestControllerExceptionAdvice extends Exception {
     }
 
     @ExceptionHandler({NoSuchElementException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<Object> handledException(NoSuchElementException exception) {
-        var response = new StudentPaymentResponse(null, exception.getMessage(), HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        var response = new StudentPaymentResponse(null, exception.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({RuntimeException.class})
@@ -47,7 +46,7 @@ public class RestControllerExceptionAdvice extends Exception {
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler({HttpMessageNotReadableException.class, HttpMediaTypeNotAcceptableException.class})
+    @ExceptionHandler({HttpMessageNotReadableException.class, HttpMediaTypeNotAcceptableException.class,IllegalArgumentException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleHttpExceptions(Exception exception) {
         var response = new StudentPaymentResponse(null, exception.getMessage(), HttpStatus.BAD_REQUEST);
