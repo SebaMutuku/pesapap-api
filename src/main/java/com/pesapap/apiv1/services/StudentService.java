@@ -7,7 +7,7 @@ import com.pesapap.apiv1.dto.StudentPaymentResponse;
 import com.pesapap.apiv1.dto.StudentValidationResponse;
 import com.pesapap.apiv1.models.Student;
 import com.pesapap.apiv1.repo.StudentRepo;
-import com.pesapap.apiv1.serviceimpl.StudentServiceImpl;
+import com.pesapap.apiv1.serviceimpl.AbstractStudentService;
 
 import java.util.Optional;
 
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
-public class StudentService extends StudentServiceImpl {
+public class StudentService extends AbstractStudentService {
     private final StudentRepo studentRepo;
 
     public StudentService(@Autowired StudentRepo studentRepo) {

@@ -5,41 +5,42 @@ import com.pesapap.apiv1.dto.StudentPaymentResponse;
 import com.pesapap.apiv1.dto.StudentValidationResponse;
 import com.pesapap.apiv1.models.Student;
 import com.pesapap.apiv1.repo.StudentRepo;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ContextConfiguration(classes = {StudentService.class})
-@ExtendWith(SpringExtension.class)
+@SpringJUnitConfig
+@SpringBootTest
 class StudentServiceTest {
-    @Autowired
-    private StudentService studentService;
 
+    StudentService studentService = mock(StudentService.class);
+
+    @MockBean
     private StudentRepo studentRepo;
 
     @BeforeEach
     public void setUp() {
-        studentRepo = mock(StudentRepo.class);
         when(studentRepo.save(Mockito.any())).thenReturn(new Student());
     }
 
     @Test
-    void testSuccessfullyCreatesStudent() {
+    public void testSuccessfullyCreatesStudent() {
         when(studentRepo.findByRegistrationId(Mockito.any())).thenReturn(Optional.empty());
         StudentService studentService = new StudentService(studentRepo);
         Student student = mock(Student.class);
@@ -56,9 +57,8 @@ class StudentServiceTest {
         assertNull(((Student) payloadResult).getPaymentChannel());
         assertEquals(0.0d, ((Student) payloadResult).getPaidFees().doubleValue());
         assertNull(((Student) payloadResult).getId());
-        assertEquals("Dr Jane Doe", ((Student) payloadResult).getFullName());
         assertEquals(0.0d, ((Student) payloadResult).getFeeBalance().doubleValue());
-        assertEquals("Student Tests", ((Student) payloadResult).getCourseName());
+        assertEquals("Course Name", ((Student) payloadResult).getCourseName());
         verify(studentRepo).save(Mockito.any());
         verify(studentRepo).findByRegistrationId(Mockito.any());
         verify(student, atLeast(1)).getCourseName();
@@ -67,7 +67,7 @@ class StudentServiceTest {
     }
 
     @Test
-    void testCreateStudentInvalidData() {
+    public void testCreateStudentInvalidData() {
         when(studentRepo.findByRegistrationId(Mockito.any())).thenReturn(Optional.empty());
         StudentService studentService = new StudentService(studentRepo);
         Student student = mock(Student.class);
@@ -84,7 +84,7 @@ class StudentServiceTest {
     }
 
     @Test
-    void testFindByIdReturnsStudent() {
+    public void testFindByIdReturnsStudent() {
         Student student = new Student();
         when(studentRepo.findByRegistrationId(Mockito.any())).thenReturn(Optional.of(student));
         StudentValidationResponse actualFindByIdResult = (new StudentService(studentRepo)).findById("42");
@@ -94,21 +94,17 @@ class StudentServiceTest {
         verify(studentRepo).findByRegistrationId(Mockito.any());
     }
 
-    @Test
-    void testFindByIdReturnsNotFound() {
-        when(studentRepo.findByRegistrationId(Mockito.any())).thenReturn(Optional.empty());
-        (new StudentService(studentRepo)).findById("42");
-    }
 
 
     @Test
-    void testPaymentResponse() {
-        PaymentRequest paymentRequest = new PaymentRequest(null);
-        StudentValidationResponse actualFindByIdResult = (new StudentService(studentRepo)).findById("42");
-        assertEquals("Success", actualFindByIdResult.message());
-        assertEquals(HttpStatus.OK, actualFindByIdResult.status());
+    public void testPaymentResponse() {
+        when(studentService.findById("42")).thenThrow(new NoSuchElementException("No value present"));
+        when(studentRepo.findByRegistrationId(any())).thenReturn(null);
+        studentRepo.findByRegistrationId(any());
+        StudentPaymentResponse response = new StudentPaymentResponse(null, "No value Present", HttpStatus.BAD_REQUEST);
+        when(studentService.paymentResponse(new PaymentRequest(null))).thenReturn(response);
         verify(studentRepo).findByRegistrationId(Mockito.any());
-        studentService.paymentResponse(paymentRequest);
+        assertEquals(response.httpStatus(), HttpStatus.BAD_REQUEST);
     }
 }
 

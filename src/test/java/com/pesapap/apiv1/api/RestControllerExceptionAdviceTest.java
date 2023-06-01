@@ -3,10 +3,12 @@ package com.pesapap.apiv1.api;
 import com.pesapap.apiv1.dto.StudentPaymentResponse;
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 
+@SpringJUnitConfig
+@SpringBootTest
 class RestControllerExceptionAdviceTest {
 
     @Test
